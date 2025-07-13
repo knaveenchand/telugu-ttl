@@ -7,6 +7,15 @@ import os
 
 app = FastAPI()
 
+# Allow only your frontend origin
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://learn.parishkaar.com"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 API_SECRET_KEY = os.getenv("API_SECRET_KEY", "invalid")
 
 class PublicSpeakRequest(BaseModel):
