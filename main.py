@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Response, Request
+from fastapi.middleware.cors import CORSMiddleware  # ✅ ADD THIS LINE
 from pydantic import BaseModel
 from typing import Optional
 import edge_tts
