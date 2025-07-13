@@ -1,18 +1,28 @@
-from fastapi import FastAPI, Query, Response
+from fastapi import FastAPI, HTTPException, Response, Request
+from pydantic import BaseModel
+from typing import Optional
 import edge_tts
-import asyncio
 import uuid
 import os
 
 app = FastAPI()
 
-@app.get("/speak")
-async def speak(text: str = Query(..., min_length=1, max_length=1000)):
-    voice = "te-IN-ShrutiNeural"
+API_SECRET_KEY = os.getenv("API_SECRET_KEY", "invalid")
+
+class PublicSpeakRequest(BaseModel):
+    text: str
+    voice: Optional[str] = "te-IN-ShrutiNeural"
+
+@app.post("/proxy-speak")
+async def proxy_speak(data: PublicSpeakRequest):
+    if not data.text.strip():
+        raise HTTPException(status_code=400, detail="Text cannot be empty")
+
+    voice = data.voice or "te-IN-ShrutiNeural"
     filename = f"/tmp/{uuid.uuid4()}.mp3"
 
     try:
-        communicate = edge_tts.Communicate(text, voice)
+        communicate = edge_tts.Communicate(data.text, voice)
         await communicate.save(filename)
 
         with open(filename, "rb") as f:
