@@ -11,7 +11,7 @@ app = FastAPI()
 # Allow only your frontend origin
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://learn.parishkaar.com"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
